@@ -1,7 +1,7 @@
-# this Dockerfile is derived from:
+# this Dockerfile acknowledges:
 #   https://github.com/zachdeibert/docker-images/blob/master/software/typescript/Dockerfile
 #   https://github.com/prakhar1989/docker-curriculum/blob/master/flask-app/Dockerfile
-#
+
 FROM node:12.16
 
 MAINTAINER Don Gillies <dwgillies@gmail.com>

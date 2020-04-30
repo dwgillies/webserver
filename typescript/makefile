@@ -1,3 +1,6 @@
+USER=systembuilder22
+IMAGE=nicetry
+
 all:	install js build
 
 install:
@@ -10,7 +13,7 @@ js:
 	tsc app.ts
 
 build:
-	docker build -t systembuilder22/nicetry .
+	docker build -t ${USER}/${IMAGE} .
 
 run:
-	docker run -p 2468:80 systembuilder22/nicetry:latest
+	docker run -p 2468:80 ${USER}/${IMAGE}:latest
