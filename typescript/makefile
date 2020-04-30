@@ -8,6 +8,12 @@ install:
 	npm install --no-optional nodemon
 	npm install -g express
 
+clean:
+	npm uninstall -g typescript
+	npm uninstall --no-optional nodemon
+	npm uninstall -g express
+	rm package-lock.json
+
 js:	main.js App.js
 
 main.js: main.ts
