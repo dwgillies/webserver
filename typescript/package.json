@@ -20,11 +20,9 @@
     "url": "https://github.com/dwgillies/webserver/issues"
   },
   "homepage": "https://github.com/dwgillies/webserver#readme",
-  "devDependencies": {
-    "nodemon": "^2.0.3"
-  },
+  "devDependencies": {},
   "dependencies": {
-    "@types/node": "^13.13.4",
-    "express": "^4.17.1"
+    "@types/node": "13.13.4",
+    "express": "4.17.1"
   }
 }
