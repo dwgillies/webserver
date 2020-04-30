@@ -10,8 +10,8 @@ COPY . /srv/webserver/typescript
 WORKDIR /srv/webserver/typescript
 
 RUN npm install -g typescript && \
-    npm install -g --no-optional --save-dev nodemon && \
-    npm install -g express --save
+    npm install -g --no-optional nodemon && \
+    npm install -g express
 
 EXPOSE 80
 
