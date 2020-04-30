@@ -32,3 +32,6 @@ cleanup:
 
 push:
 	docker push ${USER}/${IMAGE}
+
+pull:
+	docker pull ${USER}/${IMAGE}
