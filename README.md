@@ -13,6 +13,6 @@ This is my first crack at a RESTful fibonacci webserver.  The repo can build and
 
 * I made sure that the container would build and run without the /node_modules directory.  It is currently going into the container and then being overwritten by an install and I'm looking for ways to avoid that duplication.
 
-* I found a tool to trim part of /node_modules but would like to know of a better way to thin it down.
+* I found a node-prune tool to trim down /node_modules and might try to apply that next.
 
 * This is my first time writing a Dockerfile from scratch.
