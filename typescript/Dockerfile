@@ -15,9 +15,7 @@ RUN npm install -g typescript && \
 
 EXPOSE 80
 
-CMD ["sleep", "9999"]
-
-# CMD ["node", "./main.js"]
+CMD ["node", "./main.js"]
 
 # start container
 # docker run -p 2468:80 systembuilder22/nicetry:latest
