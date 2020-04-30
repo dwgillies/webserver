@@ -8,8 +8,11 @@ install:
 	npm install --no-optional nodemon
 	npm install -g express
 
-js:
+js:	main.js App.js
+
+main.js: main.ts
 	tsc main.ts
+App.js: app.ts
 	tsc app.ts
 
 build:
