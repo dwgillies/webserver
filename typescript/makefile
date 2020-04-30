@@ -26,3 +26,9 @@ build:
 
 run:
 	docker run -p 2468:80 ${USER}/${IMAGE}:latest
+
+cleanup:
+	docker rm $(docker ps -a -q -f status=exited)
+
+push:
+	docker push ${USER}/${IMAGE}
