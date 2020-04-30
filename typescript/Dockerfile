@@ -10,7 +10,10 @@ COPY . /srv/webserver/typescript
 WORKDIR /srv/webserver/typescript
 
 RUN npm install -g typescript
-RUN npm install -g --no-optional --save-dev nodemon
+
+# not sure how to set up the searchpath for nodemon
+# so install inlocal directory.
+RUN npm install --no-optional --save-dev nodemon
 RUN npm install -g express --save
 
 EXPOSE 80
