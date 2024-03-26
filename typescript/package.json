@@ -23,6 +23,6 @@
   "devDependencies": {},
   "dependencies": {
     "@types/node": "13.13.4",
-    "express": "4.17.1"
+    "express": "4.19.2"
   }
 }
