@@ -5,23 +5,20 @@ IMAGE=nicetry
 
 all:	install js build
 
+# everything (express, typescript, @types/*) comes from package.json into
+# ./node_modules; no -g and no sudo
 install:
-	npm install -g typescript
-	npm install --no-optional nodemon
-	npm install -g express
+	npm install
 
 clean:
-	npm uninstall -g typescript
-	npm uninstall --no-optional nodemon
-	npm uninstall -g express
-	rm package-lock.json
+	rm -rf node_modules package-lock.json
 
 js:	main.js App.js
 
-main.js: main.ts
-	tsc main.ts
-App.js: app.ts
-	tsc app.ts
+# tsc reads tsconfig.json; with file names on the command line it would ignore
+# it. npx runs the project's pinned typescript, not the global one.
+main.js App.js &: main.ts App.ts tsconfig.json
+	npx tsc -p .
 
 build:
 	docker build -t ${DOCKER_USER}/${IMAGE} .

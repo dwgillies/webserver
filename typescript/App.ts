@@ -1,6 +1,6 @@
 import { createServer } from 'http';
 import { URL } from 'url';
-import * as express from 'express'
+import express from 'express';
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -31,12 +31,17 @@ class App {
     let statusCode : number;
 
     if ('n' in arg_map) {
-      if (arg_map.n === parseInt(arg_map.n, 10).toString(10)) {
+      const n = arg_map.n;
+      if (typeof n !== 'string') {
+        // ?n=1&n=2 parses to an array and ?n[x]=1 to an object
+        statusCode = 400;  // bad request
+        json = JSON.stringify({ 'error': 'n must be a single integer' });
+      } else if (/^-?[0-9]+$/.test(n)) {  // leading zeros are fine: 007 is 7
         statusCode = 200;
-        json = JSON.stringify({ 'fib': App.fibonacci(Number(arg_map.n)).toString() });
+        json = JSON.stringify({ 'fib': App.fibonacci(Number(n)).toString() });
       } else {
         statusCode = 400;  // bad request
-        json = JSON.stringify({ 'error': arg_map.n + ' is not an integer' });
+        json = JSON.stringify({ 'error': n + ' is not an integer' });
       }
     } else {
       statusCode = 400;      // bad request

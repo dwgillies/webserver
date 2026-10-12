@@ -8,6 +8,9 @@ LABEL maintainer="Don Gillies <dwgillies@gmail.com>"
 
 WORKDIR /srv/webserver/typescript
 
+# Express hides stack traces from clients only in production mode
+ENV NODE_ENV=production
+
 # install runtime dependencies (express) locally so require() can find them
 COPY package.json ./
 RUN npm install --omit=dev
