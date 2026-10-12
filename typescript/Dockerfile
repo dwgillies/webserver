@@ -2,16 +2,18 @@
 #   https://github.com/zachdeibert/docker-images/blob/master/software/typescript/Dockerfile
 #   https://github.com/prakhar1989/docker-curriculum/blob/master/flask-app/Dockerfile
 
-FROM node:12.16
+FROM node:22-slim
 
-MAINTAINER Don Gillies <dwgillies@gmail.com>
+LABEL maintainer="Don Gillies <dwgillies@gmail.com>"
 
-COPY . /srv/webserver/typescript
 WORKDIR /srv/webserver/typescript
 
-RUN npm install -g typescript && \
-    npm install -g --no-optional nodemon && \
-    npm install -g express
+# install runtime dependencies (express) locally so require() can find them
+COPY package.json ./
+RUN npm install --omit=dev
+
+# the .js files are compiled from the .ts sources by 'make js'
+COPY *.js ./
 
 EXPOSE 80
 

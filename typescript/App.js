@@ -44,6 +44,11 @@ var App = /** @class */ (function () {
         res.end(json);
         console.log('GET', req.url, '->', json);
     };
+    // Load balancer health check; not logged, since it is polled every few seconds
+    App.handleHealth = function (req, res) {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ 'status': 'ok' }));
+    };
     // Process undefined api calls
     App.handleDefault = function (req, res) {
         res.statusCode = 404;
@@ -55,6 +60,7 @@ var App = /** @class */ (function () {
     App.prototype.routes = function () {
         var router = express.Router();
         router.get('/api/fibonacci', App.handleFibonacci);
+        router.get('/health', App.handleHealth);
         router.get('/', App.handleDefault);
         this.express.use('/', router);
     };

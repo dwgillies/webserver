@@ -25,7 +25,7 @@ class App {
   }
 
   // Process a request for a fibonacci number
-  static handleFibonacci(req: express.Reuqest, res: express.Response): void {
+  static handleFibonacci(req: express.Request, res: express.Response): void {
     let arg_map = req.query;
     let json : string;
     let statusCode : number;
@@ -47,8 +47,14 @@ class App {
     console.log('GET', req.url, '->', json);
   }
 
+  // Load balancer health check; not logged, since it is polled every few seconds
+  static handleHealth(req: express.Request, res: express.Response): void {
+    res.writeHead(200, {"Content-Type": "application/json"});
+    res.end(JSON.stringify({ 'status': 'ok' }));
+  }
+
   // Process undefined api calls
-  static handleDefault(req: express.Reuqest, res: express.Response): void {
+  static handleDefault(req: express.Request, res: express.Response): void {
     res.statusCode = 404;
     res.setHeader('Content-Type', 'text/plain');
     res.end( JSON.stringify({ 'error': 'api endpoint undefined: ' + req.url }) );
@@ -60,6 +66,7 @@ class App {
     let router = express.Router();
 
     router.get('/api/fibonacci', App.handleFibonacci);
+    router.get('/health', App.handleHealth);
     router.get('/', App.handleDefault);
 
     this.express.use('/', router);

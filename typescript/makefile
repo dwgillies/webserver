@@ -1,5 +1,7 @@
-USER=systembuilder22
+DOCKER_USER=systembuilder22
 IMAGE=nicetry
+
+.PHONY: all install clean js build run cleanup nuke push pull
 
 all:	install js build
 
@@ -22,16 +24,21 @@ App.js: app.ts
 	tsc app.ts
 
 build:
-	docker build -t ${USER}/${IMAGE} .
+	docker build -t ${DOCKER_USER}/${IMAGE} .
 
 run:
-	docker run -p 2468:80 ${USER}/${IMAGE}:latest
+	docker run -p 2468:80 ${DOCKER_USER}/${IMAGE}:latest
 
+# xargs -r skips docker rm when there is nothing to remove
 cleanup:
-	docker rm $(docker ps -a -q -f status=exited)
+	docker ps -a -q -f status=exited | xargs -r docker rm
+
+# force-remove every container, running or stopped
+nuke:
+	docker ps -a -q | xargs -r docker rm -f
 
 push:
-	docker push ${USER}/${IMAGE}
+	docker push ${DOCKER_USER}/${IMAGE}
 
 pull:
-	docker pull ${USER}/${IMAGE}
+	docker pull ${DOCKER_USER}/${IMAGE}
