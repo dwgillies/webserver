@@ -1,0 +1,3 @@
+# copy to backend.hcl, set the bucket from the gcsbucket project's bucket_name
+# output, then run: terraform init -backend-config=backend.hcl
+bucket = "wgillies-tfstate-my-project-123456"

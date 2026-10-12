@@ -1,0 +1,11 @@
+# copy to terraform.tfvars and edit
+
+project_id = "my-project-123456"
+
+# your public IP, from: curl -s https://checkip.amazonaws.com
+admin_cidr = "203.0.113.7/32"
+
+# optional: a subdomain of wgillies.net delegated to Cloud DNS
+# domain_name  = "gcp.wgillies.net"
+# subdomain    = "fib"    # site at fib.gcp.wgillies.net
+# enable_https = true

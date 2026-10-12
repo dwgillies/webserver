@@ -1,0 +1,9 @@
+# copy to terraform.tfvars and edit
+
+# your public IP, from: curl -s https://checkip.amazonaws.com
+admin_cidr = "203.0.113.7/32"
+
+# optional: a domain you own, registered outside AWS
+# domain_name  = "example.com"
+# subdomain    = "fib"    # site at fib.example.com; "" for the bare domain
+# enable_https = true

@@ -1,0 +1,87 @@
+variable "name" {
+  description = "Name prefix for all resources"
+  type        = string
+  default     = "nicetry"
+}
+
+variable "region" {
+  description = "AWS Region. Projects in the new AWS experience can only use their assigned Region."
+  type        = string
+  default     = "us-east-2"
+}
+
+variable "aws_profile" {
+  description = "AWS CLI profile used by the provider"
+  type        = string
+  default     = "agent-toolkit"
+}
+
+variable "vpc_cidr" {
+  description = "CIDR block for the VPC"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "admin_cidr" {
+  description = "CIDR allowed to SSH to the bastion, e.g. \"203.0.113.7/32\". No default, so SSH is never open to the world by accident."
+  type        = string
+}
+
+variable "ssh_public_key_path" {
+  description = "Public key installed on the bastion and the web instance"
+  type        = string
+  default     = "~/.ssh/id_ed25519.pub"
+}
+
+variable "instance_type" {
+  description = "EC2 instance type for the bastion and the web server"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "container_image" {
+  description = "Docker image the web instance runs"
+  type        = string
+  default     = "systembuilder22/nicetry:latest"
+}
+
+variable "domain_name" {
+  description = "Optional domain you own (e.g. \"example.com\"). When set, a Route 53 hosted zone and an alias record to the ALB are created. Leave empty to use the ALB's DNS name."
+  type        = string
+  default     = ""
+}
+
+variable "subdomain" {
+  description = "Host name for the site within domain_name, e.g. \"fib\" for fib.example.com. Empty puts the site at the bare domain."
+  type        = string
+  default     = "fib"
+}
+
+variable "enable_https" {
+  description = "Create an ACM certificate and an HTTPS listener. Requires domain_name, and the domain's registrar must already point at the hosted zone's name servers, or apply will hang waiting for certificate validation."
+  type        = bool
+  default     = false
+}
+
+variable "enable_nat" {
+  description = "Boolean to enable the NAT (only needed to bootstrap EC2 instance), can be turned off after EC2 instance is up-and-running (so long as it doesn't lose its host and need a new docker image."
+  type        = bool
+  default     = true
+}
+
+variable "redirect_http" {
+  description = "When HTTPS is on, redirect port 80 to 443 instead of serving on both"
+  type        = bool
+  default     = true
+}
+variable "log_retention_days" {
+  description = "Days CloudWatch keeps the web container's logs"
+  type        = number
+  default     = 7
+}
+
+variable "gcp_name_servers" {
+  description = "Cloud DNS name servers for gcp.<domain_name>, from dev-google's dns_name_servers output. Empty means no delegation record."
+  type        = list(string)
+  default     = []
+}

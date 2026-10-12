@@ -1,0 +1,13 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+backend.hcl
+crash.log
+
+# the bootstrap projects' state has no secrets and can't live in the bucket
+# it creates, so keep it in git
+!s3bucket/terraform.tfstate
+!gcsbucket/terraform.tfstate
+tfplan
+graph.svg
