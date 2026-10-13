@@ -23,3 +23,15 @@ output "dns_name_servers" {
   description = "Add these as an NS record for domain_name in the parent zone (Route 53)"
   value       = local.use_dns ? google_dns_managed_zone.site[0].name_servers : []
 }
+
+# run by "make redeploy" on the web instance: pull the image first, so a failed
+# pull (e.g. the NAT is off) leaves the old container running, then replace the
+# container and wait for it to answer /health
+output "redeploy_command" {
+  value = join(" && ", [
+    "sudo docker pull ${var.container_image}",
+    "sudo docker rm -f webserver",
+    "sudo ${replace(local.docker_run, " \\\n  ", " ")}",
+    "for i in 1 2 3 4 5 6 7 8 9 10; do curl -sf localhost/health && break; sleep 1; done",
+  ])
+}

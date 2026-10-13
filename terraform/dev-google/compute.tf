@@ -1,5 +1,15 @@
 locals {
   ssh_keys = "${var.ssh_user}:${trimspace(file(pathexpand(var.ssh_public_key_path)))}"
+
+  # how the web container is started, used both by the startup script and by
+  # the redeploy_command output (make redeploy), so the two can't drift apart;
+  # gcplogs sends the container's output to Cloud Logging, using the VM's
+  # service account (roles/logging.logWriter)
+  docker_run = join(" ", [
+    "docker run -d --restart unless-stopped --name webserver -p 80:80",
+    "--log-driver gcplogs",
+    var.container_image,
+  ])
 }
 
 # a dedicated identity for the instances, allowed only to write logs and
@@ -83,7 +93,7 @@ resource "google_compute_instance" "web" {
     fi
     systemctl enable --now docker
     docker rm -f webserver 2>/dev/null || true
-    docker run -d --restart unless-stopped --name webserver -p 80:80 ${var.container_image}
+    ${local.docker_run}
   EOF
 
   service_account {

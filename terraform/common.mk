@@ -4,7 +4,7 @@ TF        ?= terraform
 INIT_ARGS ?=
 PLAN      ?= tfplan
 
-.PHONY: init fmt validate plan apply destroy output graph clean shell
+.PHONY: init fmt validate plan apply destroy output graph clean shell redeploy
 
 init:
 	$(TF) init $(INIT_ARGS)
@@ -36,3 +36,8 @@ clean:
 
 shell:
 	$$($(TF) output -raw ssh_to_web)
+
+# pull the latest image on the web instance and restart its container, using
+# this cloud's own docker run command (the project's redeploy_command output)
+redeploy:
+	$$($(TF) output -raw ssh_to_web) "$$($(TF) output -raw redeploy_command)"

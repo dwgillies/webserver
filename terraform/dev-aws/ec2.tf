@@ -52,6 +52,19 @@ resource "aws_instance" "bastion" {
   tags = { Name = "${var.name}-bastion" }
 }
 
+# how the web container is started, used both by the instance's first-boot
+# script and by the redeploy_command output (make redeploy), so the two can't
+# drift apart; joined with " \\" line continuations to keep user_data readable
+locals {
+  docker_run = join(" \\\n  ", [
+    "docker run -d --restart unless-stopped --name webserver -p 80:80",
+    "--log-driver awslogs",
+    "--log-opt awslogs-region=${var.region}",
+    "--log-opt awslogs-group=${aws_cloudwatch_log_group.web.name}",
+    var.container_image,
+  ])
+}
+
 resource "aws_instance" "web" {
   ami                    = data.aws_ssm_parameter.al2023.value
   instance_type          = var.instance_type
@@ -65,11 +78,7 @@ resource "aws_instance" "web" {
     set -euxo pipefail
     dnf install -y docker
     systemctl enable --now docker
-    docker run -d --restart unless-stopped --name webserver -p 80:80 \
-      --log-driver awslogs \
-      --log-opt awslogs-region=${var.region} \
-      --log-opt awslogs-group=${aws_cloudwatch_log_group.web.name} \
-      ${var.container_image}
+    ${local.docker_run}
   EOF
 
   # re-create the instance when the startup script changes
