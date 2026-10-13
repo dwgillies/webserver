@@ -49,7 +49,17 @@ class App {
     }
     res.writeHead(statusCode, {"Content-Type": "application/json"});
     res.end(json);
-    console.log('GET', req.url, '->', json);
+    App.logRequest(req, json);
+  }
+
+  // One log line per request: what was asked, what we answered, and who asked.
+  // Behind a load balancer the socket address is the load balancer's, so the
+  // client's address comes from the X-Forwarded-For header it adds. The user
+  // agent is JSON-quoted so a newline in it can't forge an extra log line.
+  static logRequest(req: express.Request, result: string): void {
+    const client = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const agent = JSON.stringify(req.headers['user-agent'] || '-');
+    console.log(req.method, req.url, '->', result, '|', client, '|', agent);
   }
 
   // Load balancer health check; not logged, since it is polled every few seconds
@@ -58,12 +68,12 @@ class App {
     res.end(JSON.stringify({ 'status': 'ok' }));
   }
 
-  // Process undefined api calls
+  // Process undefined api calls (any method, any path the router didn't match)
   static handleDefault(req: express.Request, res: express.Response): void {
     res.statusCode = 404;
-    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Content-Type', 'application/json');
     res.end( JSON.stringify({ 'error': 'api endpoint undefined: ' + req.url }) );
-    console.log('GET', req.url, '->', 'undefined');
+    App.logRequest(req, 'undefined');
   }
 
   // Configure API endpoints.
@@ -72,9 +82,10 @@ class App {
 
     router.get('/api/fibonacci', App.handleFibonacci);
     router.get('/health', App.handleHealth);
-    router.get('/', App.handleDefault);
 
     this.express.use('/', router);
+    // registered last, so it only sees requests no route above answered
+    this.express.use(App.handleDefault);
   }
 }
 export default new App().express;
